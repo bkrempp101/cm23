@@ -1,0 +1,50 @@
+modules = ["nodejs-20"]
+
+[nix]
+channel = "stable-24_05"
+
+[workflows]
+runButton = "Project"
+
+[[workflows.workflow]]
+name = "Project"
+mode = "parallel"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "Start Server"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "Check Server Logs"
+
+[[workflows.workflow]]
+name = "Start Server"
+author = "agent"
+
+[workflows.workflow.metadata]
+agentRequireRestartOnSave = false
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "cd server && npm run dev"
+waitForPort = 8000
+
+[[workflows.workflow]]
+name = "Check Server Logs"
+author = "agent"
+
+[workflows.workflow.metadata]
+agentRequireRestartOnSave = false
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "cat /home/runner/.replit/logs/Start_Server.log"
+
+[deployment]
+run = ["sh", "-c", "cd server && npm run dev"]
+
+[[ports]]
+localPort = 8000
+externalPort = 80

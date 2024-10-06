@@ -1,0 +1,81 @@
+The error you’re encountering, TypeError: Cannot read properties of undefined (reading 'model'), suggests there may be an issue with how Mongoose is being imported or used in your User.ts file. Here’s how to correctly structure the import and use of Mongoose in a typical TypeScript file.
+
+Example of a Correct User.ts Setup:
+
+import mongoose, { Schema, Document, Model } from 'mongoose';
+
+// Step 1: Define an interface for the User model
+interface IUser extends Document {
+  name: string;
+  email: string;
+  password: string;
+}
+
+// Step 2: Define the schema for the User
+const UserSchema: Schema = new Schema({
+  name: {
+    type: String,
+    required: true,
+  },
+  email: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+  password: {
+    type: String,
+    required: true,
+  },
+});
+
+// Step 3: Create and export the User model
+const User: Model<IUser> = mongoose.model<IUser>('User', UserSchema);
+
+export default User;
+
+Steps to Ensure Correct Usage:
+
+	1.	Ensure Mongoose is Properly Installed:
+Run npm install mongoose @types/mongoose if it’s not installed. This ensures TypeScript can access the types provided by Mongoose.
+	2.	Import Mongoose Correctly:
+Ensure that import mongoose from 'mongoose' is being used, and that Mongoose is not being imported destructively (like const { model } = require('mongoose')). The error you’re seeing can occur when model isn’t accessible, which often happens with incorrect or incomplete imports.
+	3.	Define the Mongoose Schema and Model:
+The schema should be correctly associated with the model. For example:
+
+const User: Model<IUser> = mongoose.model<IUser>('User', UserSchema);
+
+
+	4.	Check Connection to MongoDB:
+Make sure your MongoDB connection is established before trying to create or access models. This can be done in a file like db.ts:
+
+import mongoose from 'mongoose';
+
+mongoose.connect('mongodb://localhost:27017/yourDatabase', {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
+
+const db = mongoose.connection;
+db.on('error', console.error.bind(console, 'connection error:'));
+db.once('open', () => {
+  console.log('Connected to MongoDB');
+});
+
+
+	5.	Ensure Correct TypeScript Types:
+Make sure the interface (IUser in the example) is correctly associated with the document structure you expect in MongoDB.
+
+Common Pitfalls:
+
+	•	Uninitialized Mongoose Connection: If Mongoose isn’t connected to the database, mongoose.model() may not work as expected. Ensure the connection is properly established before using the model.
+	•	Duplicate Imports: Ensure mongoose is only being imported once in the codebase, as multiple imports could cause issues with models being undefined.
+
+Debugging Tips:
+
+	•	Log mongoose before creating the model to ensure it’s imported correctly:
+
+console.log(mongoose);
+
+
+
+Let me know if this helps or if you need further assistance with your setup!

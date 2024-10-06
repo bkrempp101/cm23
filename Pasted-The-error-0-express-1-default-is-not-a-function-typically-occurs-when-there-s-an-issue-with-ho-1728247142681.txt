@@ -1,0 +1,86 @@
+The error '(0 , express_1.default) is not a function' typically occurs when there’s an issue with how Express is being imported in your TypeScript project. This often happens due to mismatches between ES Modules and CommonJS modules. Here’s how you can fix it.
+
+Solution:
+
+Ensure you’re correctly importing Express based on the module system you’re using in your project.
+
+1. Correct Express Import for TypeScript with CommonJS (Typical Setup):
+
+If your project uses CommonJS (which is the default for many Node.js projects), you should import Express like this:
+
+// server/src/server.ts
+import express from 'express';
+
+const app = express();
+
+app.get('/', (req, res) => {
+  res.send('Hello World!');
+});
+
+app.listen(3000, () => {
+  console.log('Server running on port 3000');
+});
+
+Ensure that your tsconfig.json has the following settings:
+
+{
+  "compilerOptions": {
+    "esModuleInterop": true,
+    "module": "commonjs",
+    "target": "es6",
+    // Other options...
+  }
+}
+
+The "esModuleInterop": true setting is important because it ensures compatibility between CommonJS and ES Modules, allowing you to use the default import syntax for Express.
+
+2. ES Module Approach:
+
+If your project is configured to use ES Modules (e.g., if you have "type": "module" in your package.json), you should ensure Express is imported as an ES module. In this case, you would write:
+
+import express from 'express';
+
+Your tsconfig.json should look like this if you’re using ES Modules:
+
+{
+  "compilerOptions": {
+    "module": "esnext",
+    "target": "es6",
+    "esModuleInterop": true,
+    // Other options...
+  }
+}
+
+3. Double Check the express Installation:
+
+Make sure you have installed Express and its TypeScript types:
+
+npm install express
+npm install @types/express
+
+4. Check Package.json Type:
+
+If you’re using ES Modules, your package.json should have "type": "module". If not, ensure it’s using "commonjs":
+
+	•	For CommonJS (most Node.js projects):
+
+{
+  "type": "commonjs"
+}
+
+
+	•	For ES Modules:
+
+{
+  "type": "module"
+}
+
+
+
+Summary:
+
+	•	Use import express from 'express'; with "esModuleInterop": true in tsconfig.json.
+	•	Ensure you’ve installed both express and @types/express.
+	•	Ensure your project is configured correctly in terms of module type (CommonJS or ES Modules).
+
+Let me know if this solves the issue!
