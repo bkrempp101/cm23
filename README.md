@@ -1,4 +1,4 @@
-Certainly! Here's a comprehensive deployment checklist that covers both your custom backend and the WordPress integration. This list assumes you're deploying to a cloud platform like Heroku for the backend and a separate hosting service for WordPress.
+comprehensive deployment checklist that covers both your custom backend and the WordPress integration. This list assumes you're deploying to a cloud platform like Heroku for the backend and a separate hosting service for WordPress.
 Backend Deployment:
 
 Prepare the codebase:
