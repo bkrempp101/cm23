@@ -1,3 +1,30 @@
+I'm encountering persistent issues with the User model in server/src/models/User.ts. The server fails to start due to a TypeError: Cannot read properties of undefined (reading 'model'). Could you please review the User.ts file and provide guidance on the correct way to import and use mongoose in this project?
+
+All authentication and functionality tests are failing due to JSON parsing errors. Could you please manually test a few API endpoints (e.g., user signup, login, sending a message) using a tool like cURL or Postman, and share the actual responses? This will help us determine if the issue is with the API responses or the test scripts
+
+To manually test your API endpoints for issues like JSON parsing errors, you can use Postman or cURL to simulate requests and examine the responses. Here’s how to test the user signup, login, and message-sending functionality.
+
+I'm encountering persistent issues with the User model in server/src/models/User.ts. The server fails to start due to a TypeError: Cannot read properties of undefined (reading 'model'). 
+
+
+I’ve noticed the database url is not set correctly. Please provide a valid mongodb connection string.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 The error '(0 , express_1.default) is not a function' typically occurs when there’s an issue with how Express is being imported in your TypeScript project. This often happens due to mismatches between ES Modules and CommonJS modules. Here’s how you can fix it.
 
 Solution:
