@@ -1,0 +1,169 @@
+Certainly! Let's go through each component and ensure they're all using the central configuration. We'll update the imports and usage in each file to reference our central configuration.
+
+Update the central configuration file (if not already done):
+
+typescriptCopy// config/index.ts
+
+import dotenv from 'dotenv';
+
+dotenv.config();
+
+export default {
+  nodeEnv: process.env.NODE_ENV || 'development',
+  port: parseInt(process.env.PORT || '3000', 10),
+  databaseUrl: process.env.DATABASE_URL!,
+  jwtSecret: process.env.JWT_SECRET!,
+  jwtExpiresIn: process.env.JWT_EXPIRES_IN || '1d',
+  wordpressUrl: process.env.WORDPRESS_URL!,
+  stripeSecretKey: process.env.STRIPE_SECRET_KEY!,
+  encryptionKey: process.env.ENCRYPTION_KEY!,
+  sessionSecret: process.env.SESSION_SECRET!,
+  emailService: {
+    host: process.env.EMAIL_HOST!,
+    port: parseInt(process.env.EMAIL_PORT || '587', 10),
+    user: process.env.EMAIL_USER!,
+    pass: process.env.EMAIL_PASS!,
+  },
+  woocommerce: {
+    url: process.env.WC_URL!,
+    consumerKey: process.env.WC_CONSUMER_KEY!,
+    consumerSecret: process.env.WC_CONSUMER_SECRET!,
+  },
+};
+Now, let's update each component:
+
+Update database connection:
+
+typescriptCopy// src/db/index.ts
+
+import mongoose from 'mongoose';
+import config from '../config';
+import logger from '../utils/logger';
+
+const connectDB = async () => {
+  try {
+    await mongoose.connect(config.databaseUrl);
+    logger.info('MongoDB connected successfully');
+  } catch (error) {
+    logger.error('MongoDB connection error:', error);
+    process.exit(1);
+  }
+};
+
+export default connectDB;
+
+Update User model:
+
+typescriptCopy// src/models/User.ts
+
+import mongoose from 'mongoose';
+import config from '../config';
+
+// ... rest of the User model code
+
+Update authentication middleware:
+
+typescriptCopy// src/middleware/auth.ts
+
+import jwt from 'jsonwebtoken';
+import config from '../config';
+
+// ... rest of the auth middleware code
+
+jwt.verify(token, config.jwtSecret, (err, decoded) => {
+  // ... verification logic
+});
+
+Update email service:
+
+typescriptCopy// src/services/emailService.ts
+
+import nodemailer from 'nodemailer';
+import config from '../config';
+
+const transporter = nodemailer.createTransport({
+  host: config.emailService.host,
+  port: config.emailService.port,
+  auth: {
+    user: config.emailService.user,
+    pass: config.emailService.pass,
+  },
+});
+
+// ... rest of the email service code
+
+Update Stripe integration:
+
+typescriptCopy// src/services/stripeService.ts
+
+import Stripe from 'stripe';
+import config from '../config';
+
+const stripe = new Stripe(config.stripeSecretKey, {
+  apiVersion: '2023-10-16', // Use the latest API version
+});
+
+// ... rest of the Stripe service code
+
+Update WooCommerce integration:
+
+typescriptCopy// src/services/wooCommerceService.ts
+
+import WooCommerceRestApi from '@woocommerce/woocommerce-rest-api';
+import config from '../config';
+
+const api = new WooCommerceRestApi({
+  url: config.woocommerce.url,
+  consumerKey: config.woocommerce.consumerKey,
+  consumerSecret: config.woocommerce.consumerSecret,
+  version: 'wc/v3'
+});
+
+// ... rest of the WooCommerce service code
+
+Update main server file:
+
+typescriptCopy// src/server.ts
+
+import express from 'express';
+import config from './config';
+import connectDB from './db';
+import logger from './utils/logger';
+
+const app = express();
+
+// ... middleware and route setup
+
+app.listen(config.port, () => {
+  logger.info(`Server running in ${config.nodeEnv} mode on port ${config.port}`);
+});
+
+connectDB();
+
+Update encryption utility:
+
+typescriptCopy// src/utils/encryption.ts
+
+import crypto from 'crypto';
+import config from '../config';
+
+const algorithm = 'aes-256-cbc';
+const key = crypto.scryptSync(config.encryptionKey, 'salt', 32);
+
+// ... rest of the encryption utility code
+
+Update session configuration (if using express-session):
+
+typescriptCopy// src/middleware/session.ts
+
+import session from 'express-session';
+import config from '../config';
+
+export const sessionMiddleware = session({
+  secret: config.sessionSecret,
+  resave: false,
+  saveUninitialized: true,
+  cookie: { secure: config.nodeEnv === 'production' }
+});
+By updating these components, we ensure that all parts of the application are using the centralized configuration. This approach makes it easier to manage environment-specific settings and helps maintain consistency across the application.
+Remember to import and use the config object in any other custom services or components you may have in your project. This centralized approach will make it much easier to manage and update configuration settings as your project evolves. CopyRetry2 / 2Claude does not have tbility to run the code it generates yet.Claude can make mistakes. Please double-check responses. 3.5 Sonnet
